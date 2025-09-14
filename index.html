@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <title>VidyaPath - Learn & Grow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+    <!-- Chart.js for Data Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: { DEFAULT: '#6d28d9', hover: '#5b21b6' }, // A vibrant purple
+                        secondary: '#10b981',
+                        light: '#f5f3ff',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-6px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .btn { transition: all 0.3s ease; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); }
+        .hidden-view { display: none; }
+        
+        #login-page-container { background-size: cover; background-position: center; transition: background-image 1s ease-in-out; }
+        .login-backdrop { backdrop-filter: blur(5px); background-color: rgba(0,0,0,0.3); }
+        #chatbot-container { transition: all 0.3s ease-in-out; }
+        .chat-bubble { max-width: 75%; }
+        .yt-container { position: relative; width: 100%; overflow: hidden; padding-top: 56.25%; /* 16:9 Aspect Ratio */ }
+        .yt-container iframe { position: absolute; top: 0; left: 0; bottom: 0; right: 0; width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <div id="app-container">
+
+        <!-- Login Page View -->
+        <div id="login-page" class="min-h-screen">
+            <!-- ... existing login page code ... -->
+            <div id="login-page-container" class="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+                <div class="hidden md:flex flex-col justify-center items-start p-12 lg:p-24 text-white relative">
+                   <div class="absolute inset-0 login-backdrop"></div>
+                   <div class="relative z-10">
+                        <h1 class="text-5xl lg:text-6xl font-bold leading-tight">Great To See <br>You Again!</h1>
+                        <p class="mt-6 text-lg max-w-lg font-light">
+                            "Education is the most powerful weapon which you can use to change the world."
+                        </p>
+                        <p class="mt-2 text-md font-semibold">~ Dr. A.P.J. Abdul Kalam</p>
+                   </div>
+                </div>
+                <div class="bg-white flex flex-col items-center justify-center p-8">
+                    <div class="w-full max-w-sm">
+                        <div class="flex justify-center mb-8">
+                           <img src="logo.png" alt="VidyaPath Logo" class="h-36 w-36 rounded-full shadow-lg shadow-black border-2 border-black">
+                        </div>
+                        <h2 class="text-3xl font-bold text-center text-gray-800 mb-2">Login</h2>
+                        <p class="text-center text-gray-500 mb-8">Welcome back to VidyaPath.</p>
+                        <form id="login-form">
+                            <div class="mb-4 relative">
+                                <i data-lucide="user-circle" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                                <input type="text" id="username" class="w-full pl-10 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter your Student ID" required>
+                            </div>
+                            <div class="mb-6 relative">
+                                <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                                <input type="password" id="password" class="w-full pl-10 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter your password" required>
+                            </div>
+                            <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary-hover btn">Login</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Page View -->
+        <div id="dashboard-page" class="hidden-view">
+             <!-- ... existing dashboard header ... -->
+            <header class="bg-white shadow-sm sticky top-0 z-50">
+                <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+                    <img src="logo1.png" alt="VidyaPath Logo" class="h-10 lg:ml-3">
+                    <div class="flex items-center space-x-4">
+                         <div class="relative">
+                            <i data-lucide="globe" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                            <select id="language-switcher" class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option value="en">English</option>
+                                <option value="hi">हिन्दी</option>
+                                <option value="bn">বাংলা</option>
+                                <option value="ta">தமிழ்</option>
+                            </select>
+                        </div>
+                        <button id="logout-button" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 btn flex items-center space-x-2">
+                            <i data-lucide="log-out" class="w-5 h-5"></i><span>Logout</span>
+                        </button>
+                    </div>
+                </nav>
+            </header>
+            <main class="container mx-auto px-6 py-8">
+                <!-- ... existing welcome message and stats ... -->
+                <div class="bg-gradient-to-r from-primary to-purple-800 text-white p-6 rounded-2xl shadow-lg mb-8">
+                    <h1 id="welcome-message" class="text-3xl font-bold">Welcome, Student!</h1>
+                    <p class="opacity-80 mt-1">Ready for a new learning adventure today?</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm flex flex-col items-center justify-center text-center">
+                        <div class="relative w-32 h-32">
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" stroke="currentColor" stroke-width="12" fill="transparent" class="text-gray-200" /><circle id="points-progress-circle" cx="60" cy="60" r="54" stroke="currentColor" stroke-width="12" fill="transparent" stroke-linecap="round" class="text-yellow-500" style="stroke-dasharray: 339.292; stroke-dashoffset: 339.292;" /></svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center"><span id="total-points" class="text-2xl font-bold text-gray-800">0</span><span class="text-sm text-gray-500">Points</span></div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm flex flex-col items-center justify-center text-center">
+                         <div class="relative w-32 h-32">
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" stroke="currentColor" stroke-width="12" fill="transparent" class="text-gray-200" /><circle id="quizzes-progress-circle" cx="60" cy="60" r="54" stroke="currentColor" stroke-width="12" fill="transparent" stroke-linecap="round" class="text-blue-500" style="stroke-dasharray: 339.292; stroke-dashoffset: 339.292;" /></svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center"><span id="quizzes-completed" class="text-2xl font-bold text-gray-800">0</span><span class="text-sm text-gray-500">Quizzes</span></div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm flex flex-col items-center justify-center text-center">
+                        <div class="bg-green-100 text-green-600 p-4 rounded-full mb-2"><i data-lucide="award" class="w-10 h-10"></i></div>
+                        <p class="text-3xl font-bold text-gray-800" id="badges-unlocked">0</p>
+                        <p class="text-gray-500">Badges Unlocked</p>
+                    </div>
+                </div>
+                
+                <section id="learning-activities">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">What do you want to learn today?</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 md:gap-6">
+                        <div onclick="showSubjectPage('Physics', 'PL_336A2e30b0A1bd8d85E5f40b2a623a41E')" class="bg-blue-500 text-white p-4 rounded-2xl shadow-lg text-center card-hover cursor-pointer flex flex-col items-center justify-center h-32"><i data-lucide="atom" class="w-10 h-10 mb-2"></i><h3 class="text-lg font-semibold">PHYSICS</h3></div>
+                        <div onclick="showSubjectPage('Maths', 'PL6-8E4q_3G5WnF3G5-3G5WnF3G5-3G5WnF')" class="bg-gray-600 text-white p-4 rounded-2xl shadow-lg text-center card-hover cursor-pointer flex flex-col items-center justify-center h-32"><i data-lucide="calculator" class="w-10 h-10 mb-2"></i><h3 class="text-lg font-semibold">MATHS</h3></div>
+                        <div onclick="showSubjectPage('Chemistry', 'PLgGTa4-a4l65-3-a4l65-3G5WnF3G5-3G5WnF')" class="bg-orange-500 text-white p-4 rounded-2xl shadow-lg text-center card-hover cursor-pointer flex flex-col items-center justify-center h-32"><i data-lucide="flask-conical" class="w-10 h-10 mb-2"></i><h3 class="text-lg font-semibold">CHEMISTRY</h3></div>
+                        <div onclick="showSubjectPage('Biology', 'PL_336A2e30b0A1bd8d85E5f40b2a623a41E')" class="bg-green-500 text-white p-4 rounded-2xl shadow-lg text-center card-hover cursor-pointer flex flex-col items-center justify-center h-32"><i data-lucide="leaf" class="w-10 h-10 mb-2"></i><h3 class="text-lg font-semibold">BIOLOGY</h3></div>
+                        <div onclick="showSubjectPage('Comp Sci', 'PL_336A2e30b0A1bd8d85E5f40b2a623a41E')" class="bg-purple-600 text-white p-4 rounded-2xl shadow-lg text-center card-hover cursor-pointer flex flex-col items-center justify-center h-32"><i data-lucide="laptop" class="w-10 h-10 mb-2"></i><h3 class="text-lg font-semibold">COMP SCI</h3></div>
+                        <div onclick="showSubjectPage('English', 'PL_336A2e30b0A1bd8d85E5f40b2a623a41E')" class="bg-pink-500 text-white p-4 rounded-2xl shadow-lg text-center card-hover cursor-pointer flex flex-col items-center justify-center h-32"><i data-lucide="book-open" class="w-10 h-10 mb-2"></i><h3 class="text-lg font-semibold">ENGLISH</h3></div>
+                        <div onclick="showDataVizPage()" class="bg-teal-500 text-white p-4 rounded-2xl shadow-lg text-center card-hover cursor-pointer flex flex-col items-center justify-center h-32"><i data-lucide="bar-chart-2" class="w-10 h-10 mb-2"></i><h3 class="text-lg font-semibold">DATA VIZ</h3></div>
+                    </div>
+                </section>
+            </main>
+             <!-- ... existing footer and chatbot ... -->
+            <footer class="text-center py-6 px-6 mt-8 border-t"><p class="text-gray-600">VidyaPath - An initiative for accessible education.</p><p class="text-gray-500 text-sm mt-1">Contact us: <a href="mailto:support@vidyapath.org" class="text-primary hover:underline">support@vidyapath.org</a></p></footer>
+            <div id="chatbot-button" class="fixed bottom-6 right-6 bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center cursor-pointer shadow-lg btn"><i data-lucide="message-circle" class="w-8 h-8"></i></div>
+            <div id="chatbot-container" class="fixed bottom-24 right-6 w-80 h-96 bg-white rounded-2xl shadow-xl hidden flex-col"><div class="bg-primary text-white p-4 rounded-t-2xl flex justify-between items-center"><h3 class="font-semibold">VidyaPath Assistant</h3><button id="close-chatbot" class="hover:bg-primary-hover p-1 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button></div><div class="flex-1 p-4 overflow-y-auto space-y-4"><div class="flex justify-start"><div class="bg-gray-200 p-3 rounded-lg chat-bubble"><span>Hello! How can I help you learn today?</span></div></div></div><div class="p-2 border-t"><input type="text" placeholder="Ask a question..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"></div></div>
+        </div>
+        
+        <!-- Subject Page View -->
+        <div id="subject-page" class="hidden-view">
+            <header class="bg-white shadow-sm sticky top-0 z-40">
+                <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+                    <img src="logo1.png" alt="VidyaPath Logo" class="h-10 lg:ml-3">
+                    <button onclick="showDashboard()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-hover btn flex items-center space-x-2">
+                        <i data-lucide="arrow-left"></i><span>Back to Dashboard</span>
+                    </button>
+                </nav>
+            </header>
+            <main class="container mx-auto px-6 py-8">
+                <h1 id="subject-title" class="text-4xl font-bold text-gray-800 mb-8">Subject</h1>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Left Side: Video Playlist -->
+                    <div class="lg:col-span-2">
+                        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Video Lectures</h2>
+                        <div id="youtube-playlist-container" class="yt-container bg-black rounded-xl shadow-lg">
+                            <!-- YouTube Iframe will be inserted here -->
+                        </div>
+                    </div>
+                    <!-- Right Side: Notes & Visualization -->
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Class Notes</h2>
+                            <div id="notes-container" class="bg-white p-6 rounded-xl shadow-md max-h-96 overflow-y-auto">
+                                <p class="text-gray-600">Loading notes...</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Topic Visualization</h2>
+                            <div class="bg-white p-6 rounded-xl shadow-md">
+                                 <canvas id="subject-viz-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Data Visualization Page -->
+        <div id="dataviz-page" class="hidden-view">
+            <header class="bg-white shadow-sm sticky top-0 z-40">
+                 <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+                    <img src="logo1.png" alt="VidyaPath Logo" class="h-10 lg:ml-3">
+                    <button onclick="showDashboard()" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-hover btn flex items-center space-x-2">
+                        <i data-lucide="arrow-left"></i><span>Back to Dashboard</span>
+                    </button>
+                </nav>
+            </header>
+            <main class="container mx-auto px-6 py-8">
+                 <h1 class="text-4xl font-bold text-gray-800 mb-8">Your Learning Progress</h1>
+                 <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <canvas id="main-viz-chart"></canvas>
+                 </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // --- Service Worker, Icons, DOM Elements ---
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('service-worker.js'); }); }
+        lucide.createIcons();
+
+        const loginPage = document.getElementById('login-page');
+        const dashboardPage = document.getElementById('dashboard-page');
+        const subjectPage = document.getElementById('subject-page');
+        const datavizPage = document.getElementById('dataviz-page');
+        // ... other element selections from previous version ...
+        const loginForm = document.getElementById('login-form');
+        const logoutButton = document.getElementById('logout-button');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const usernameInput = document.getElementById('username');
+        const totalPointsEl = document.getElementById('total-points');
+        const badgesUnlockedEl = document.getElementById('badges-unlocked');
+        const quizzesCompletedEl = document.getElementById('quizzes-completed');
+        const pointsProgressCircle = document.getElementById('points-progress-circle');
+        const quizzesProgressCircle = document.getElementById('quizzes-progress-circle');
+        const chatbotButton = document.getElementById('chatbot-button');
+        const chatbotContainer = document.getElementById('chatbot-container');
+        const closeChatbotButton = document.getElementById('close-chatbot');
+        const subjectTitle = document.getElementById('subject-title');
+        const ytContainer = document.getElementById('youtube-playlist-container');
+        const notesContainer = document.getElementById('notes-container');
+
+
+        // --- Dynamic Background for Login ---
+        const backgroundImages = ['1.jpg', '2.jpg', '3.jpeg', '4.jpg'];
+        let currentImageIndex = 0;
+        function changeBackgroundImage() {
+            currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
+            document.getElementById('login-page-container').style.backgroundImage = `url('${backgroundImages[currentImageIndex]}')`;
+        }
+        changeBackgroundImage(); 
+        setInterval(changeBackgroundImage, 10000);
+
+        // --- View Navigation ---
+        const showView = (viewId) => {
+            ['login-page', 'dashboard-page', 'subject-page', 'dataviz-page'].forEach(id => {
+                document.getElementById(id).classList.add('hidden-view');
+            });
+            document.getElementById(viewId).classList.remove('hidden-view');
+        };
+        
+        const showDashboard = () => showView('dashboard-page');
+        const showLoginPage = () => showView('login-page');
+        
+        const showSubjectPage = (subject, playlistId) => {
+            subjectTitle.textContent = subject;
+            // Ad-free YouTube embedding
+            ytContainer.innerHTML = `<iframe width="1470" height="670" src="https://www.youtube.com/embed/HcOc7P5BMi4" title="HTML Tutorial for Beginners | Complete HTML with Notes &amp; Code" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+            
+            // Mock Notes Content
+            notesContainer.innerHTML = `
+                <h3 class="font-bold text-lg mb-2">Chapter 1: Introduction to ${subject}</h3>
+                <p class="text-gray-600">This chapter covers the fundamental concepts. Key topics include basic formulas, historical context, and introductory problems. Make sure to review all examples provided in the video lectures.</p>
+                <h3 class="font-bold text-lg mt-4 mb-2">Key Formulas</h3>
+                <ul class="list-disc list-inside text-gray-600"><li>Formula A = X + Y</li><li>Formula B = Z / W</li></ul>`;
+            
+            // Mock Subject Visualization
+            renderChart('subject-viz-chart', ['Topic 1', 'Topic 2', 'Topic 3'], [8, 5, 9], 'Time Spent (Hours)');
+            showView('subject-page');
+        };
+
+        const showDataVizPage = () => {
+            renderChart('main-viz-chart', ['Physics', 'Maths', 'Chemistry', 'Biology'], [20, 35, 15, 25], 'Total Quizzes Taken');
+            showView('dataviz-page');
+        }
+
+        // --- Chart Rendering ---
+        let charts = {};
+        function renderChart(canvasId, labels, data, label) {
+            if (charts[canvasId]) {
+                charts[canvasId].destroy();
+            }
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            charts[canvasId] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: 'rgba(109, 40, 217, 0.6)',
+                        borderColor: 'rgba(109, 40, 217, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: { scales: { y: { beginAtZero: true } } }
+            });
+        }
+
+
+        function setProgress(circleElement, textElement, value, max_value) {
+            const radius = circleElement.r.baseVal.value;
+            const circumference = 2 * Math.PI * radius;
+            const percent = (value / max_value) * 100;
+            const offset = circumference - (percent / 100) * circumference;
+            circleElement.style.strokeDashoffset = offset;
+            textElement.textContent = value;
+        }
+
+        // --- Authentication & Data Logic ---
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = usernameInput.value.trim();
+            welcomeMessage.textContent = `Welcome, ${username || 'Student'}!`;
+            setProgress(pointsProgressCircle, totalPointsEl, 1250, 2000);
+            setProgress(quizzesProgressCircle, quizzesCompletedEl, 15, 25);
+            badgesUnlockedEl.textContent = '8';
+            showDashboard();
+        });
+
+        logoutButton.addEventListener('click', () => {
+            usernameInput.value = '';
+            setProgress(pointsProgressCircle, totalPointsEl, 0, 2000);
+            setProgress(quizzesProgressCircle, quizzesCompletedEl, 0, 25);
+            badgesUnlockedEl.textContent = '0';
+            showLoginPage();
+        });
+
+        // --- Chatbot Logic ---
+        chatbotButton.addEventListener('click', () => {
+            chatbotContainer.classList.remove('hidden');
+            chatbotContainer.classList.add('flex');
+            chatbotButton.classList.add('hidden');
+        });
+
+        closeChatbotButton.addEventListener('click', () => {
+            chatbotContainer.classList.add('hidden');
+            chatbotContainer.classList.remove('flex');
+            chatbotButton.classList.remove('hidden');
+        });
+
+        // --- Initial View ---
+        showLoginPage();
+    </script>
+</body>
+</html>
