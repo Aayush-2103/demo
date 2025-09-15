@@ -58,7 +58,7 @@
                         <p class="mt-6 text-lg max-w-lg font-light">
                             "Education is the most powerful weapon which you can use to change the world."
                         </p>
-                        <p class="mt-2 text-md font-semibold">~ Dr. A.P.J. Abdul Kalam</p>
+                        <p class="mt-2 text-md font-semibold text-right">~ Dr. A.P.J. Abdul Kalam</p>
                    </div>
                 </div>
                 <div class="bg-white flex flex-col items-center justify-center p-8">
@@ -71,13 +71,13 @@
                         <form id="login-form">
                             <div class="mb-4 relative">
                                 <i data-lucide="user-circle" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
-                                <input type="text" id="username" class="w-full pl-10 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter your Student ID" required>
+                                <input type="text" id="username" autofocus class="w-full pl-10 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter your Student ID" required>
                             </div>
                             <div class="mb-6 relative">
                                 <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
                                 <input type="password" id="password" class="w-full pl-10 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter your password" required>
                             </div>
-                            <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary-hover btn">Login</button>
+                            <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary-hover btn hover:scale-x-110 duration-300 hover:shadow-lg hover:shadow-primary ">Login</button>
                         </form>
                     </div>
                 </div>
@@ -101,7 +101,7 @@
                             </select>
                         </div>
                         <button id="logout-button" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 btn flex items-center space-x-2">
-                            <i data-lucide="log-out" class="w-5 h-5"></i><span>Logout</span>
+                            <i data-lucide="log-out" class="w-5 h-5"></i><span class="hidden md:flex">Logout</span>
                         </button>
                     </div>
                 </nav>
